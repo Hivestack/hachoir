@@ -102,14 +102,14 @@ class TestMetadata(unittest.TestCase):
             if group not in metadata:
                 if self.verbose:
                     sys.stdout.write("no group \"%s\"!\n" % group)
-                return False
+                self.fail("no group \"%s\"!\n" % group)
             metadata = metadata[group]
 
         # Has asked attribute?
         if not metadata.has(name):
             if self.verbose:
                 sys.stdout.write("no attribute \"%s\"!\n" % name)
-            return False
+            self.fail("no attribute \"%s\"!\n" % name)
 
         # Read value
         reads = metadata.getValues(name)
@@ -119,7 +119,8 @@ class TestMetadata(unittest.TestCase):
             if self.verbose:
                 sys.stdout.write("wrong len (%s instead of %s)!\n"
                                  % (len(reads), len(value)))
-            return False
+            self.fail("wrong len (%s instead of %s)!\n"
+                      % (len(reads), len(value)))
         values = value
         for index, value in enumerate(values):
             read = reads[index]
@@ -130,17 +131,18 @@ class TestMetadata(unittest.TestCase):
                 if self.verbose:
                     sys.stdout.write("wrong type (%s instead of %s)!\n"
                                      % (type(read).__name__, type(value).__name__))
-                return False
+                self.fail("wrong type (%s instead of %s)!\n"
+                          % (type(read).__name__, type(value).__name__))
 
             # Check value
             if value != read:
                 if self.verbose:
                     sys.stdout.write("wrong value %s (%r instead of %r)!\n"
                                      % (index, read, value))
-                return False
+                self.fail("wrong value %s (%r instead of %r)!\n"
+                          % (index, read, value))
         if self.verbose:
             sys.stdout.write("ok\n")
-        return True
 
     def test_png(self):
         metadata = self.extract("logo-kubuntu.png")
@@ -316,8 +318,8 @@ class TestMetadata(unittest.TestCase):
         self.check_attr(meta, "thumbnail_size", 4196),
         self.check_attr(meta, "iso_speed_ratings", 160),
         self.check_attr(meta, "exif_version", "0220"),
-        self.check_attr(meta, "date_time_original", "2003:08:06 17:52:54"),
-        self.check_attr(meta, "date_time_digitized", "2003:08:06 17:52:54"),
+        self.check_attr(meta, "date_time_original", datetime(2003, 8, 6, 17, 52, 54)),
+        self.check_attr(meta, "date_time_digitized", datetime(2003, 8, 6, 17, 52, 54)),
         self.check_attr(meta, "compressed_bits_per_pixel", 3.2),
         self.check_attr(meta, "aperture_value", 6),
         self.check_attr(meta, "exposure_bias_value", -0.5),
